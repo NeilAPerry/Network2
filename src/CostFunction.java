@@ -3,13 +3,13 @@ import java.util.function.BiFunction;
 
 public class CostFunction {
 
-	BiFunction<Double, ArrayList<Double>, Double> function;
+	BiFunction<ArrayList<Double>, ArrayList<Double>, Double> function;
 	
-	public CostFunction(BiFunction<Double, ArrayList<Double>, Double> function) {
+	CostFunction(BiFunction<ArrayList<Double>, ArrayList<Double>, Double> function) {
 		this.function = function;
 	}
 
-	public Double apply(Double a, ArrayList<Double> b) {
+	public Double apply(ArrayList<Double> a, ArrayList<Double> b) {
 		return this.function.apply(a, b);
 	}
 	

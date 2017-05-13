@@ -2,9 +2,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Network {
-	private CostFunction cost;
+	private CostFunction cost = CostFunctions.crossEntropyCost;
 	private ArrayList<ArrayList<Neuron>> neurons;
 	private final double epsilon = 0.00000000001;
+	private double totalCost;
+	private ArrayList<Double> actualOutput = new ArrayList<Double>();
 	
 	Network(ArrayList<Integer> sizes) {
 		// create network
@@ -62,17 +64,29 @@ public class Network {
 	
 	private void backPropogate(ArrayList<Double> input, ArrayList<Double> desiredOutput, double nabla) {
 		//TODO
-
+		calcTotalError(desiredOutput);
 		backpropError(desiredOutput);
 		updateWeights(nabla);
 		
 	}
+	
+	private void calcTotalError(ArrayList<Double> desiredOutput) {
+		actualOutput = new ArrayList<Double>();
+		for (Neuron n : neurons.get(neurons.size() - 1)) {
+			actualOutput.add(n.getOutput());
+		}
+		// should be cost
+		totalCost = cost(desiredOutput, actualOutput);
+	}
+	
 	private void backpropError(ArrayList<Double> desiredOutput) {
 
+		// for all layers starting at last layer
 		for (int i = neurons.size() - 1; i >= 0; i--) {
 			ArrayList<Neuron> layer = neurons.get(i);
 			ArrayList<Double> errors = new ArrayList<Double>();
 			
+			// if not output layer
 			if (i < neurons.size() - 1) {
 				for (int j = 0; j < layer.size(); j++) {
 					double error = 0.0;
