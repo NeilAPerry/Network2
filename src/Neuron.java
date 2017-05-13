@@ -42,51 +42,17 @@ public class Neuron {
 		return activation;
 	}
 
-	public void setWeight(int i, double value) {
-		weights.set(i, value);
-	}
-	public void setBias(double bias) {
-		this.bias = bias;
-	}
-	
-	public double getNumWeights() {
-		return weights.size();
-	}
-	public double getWeight(int i) {
-		return weights.get(i);
-	}
-	public double getBias() {
-		return bias;
-	}
-	public Double getActivation() {
-		return activation;
-	}
-	
-	public double getError() {
-		return error;
-	}
-
-	public void setError(double error) {
-		this.error = error;
-	}
-
-	public double getDelta() {
-		return delta;
-	}
-
-	public void setDelta(double delta) {
-		this.delta = delta;
-	}
-	public double getOutput() {
-		return output;
-	}
-
-	public void setOutput(double output) {
-		this.output = output;
-	}
-
-	public void setActivation(Double activation) {
-		// TODO Auto-generated method stub
-		this.activation = activation;
-	}
+	public void setWeight(int i, double value) { weights.set(i, value); }
+	public void setBias(double bias) { this.bias = bias; }
+	public double getNumWeights() { return weights.size(); }
+	public double getWeight(int i) { return weights.get(i); }
+	public double getBias() { return bias; }
+	public Double getActivation() { return activation; }
+	public double getError() { return error; }
+	public void setError(double error) { this.error = error; }
+	public double getDelta() { return delta; }
+	public void setDelta(double delta) { this.delta = delta; }
+	public double getOutput() { return output; }
+	public void setOutput(double output) { this.output = output; }
+	public void setActivation(Double activation) { this.activation = activation; }
 }

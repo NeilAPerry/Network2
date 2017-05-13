@@ -1,36 +1,31 @@
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class Network {
 	private CostFunction cost;
 	private ArrayList<ArrayList<Neuron>> neurons;
+	private final double epsilon = 0.00000000001;
 	
-	Network(ArrayList<Integer> sizes, CostFunction cost) {
+	Network(ArrayList<Integer> sizes) {
+		// create network
 		neurons = new ArrayList<ArrayList<Neuron>>(sizes.size());
-		for (int i = 0; i < sizes.size(); i++) {
-			neurons.add(new ArrayList<Neuron>());
-		}
-		for (int i = 0; i < sizes.size(); i++) {
-			neurons.set(i, new ArrayList<Neuron>(sizes.get(i)));
-			for (int j = 0; j < sizes.get(i); j++) {
-				neurons.get(i).add(new Neuron(0));
-			}
-			
-		}
 		
-		for (int i = 0; i < neurons.size(); i++) {
-			for (int j = 0; j < neurons.get(i).size(); j++) {
-				if (i > 0) { // Hidden Layers and Output Layer Neurons
-					neurons.get(i).set(j, new Neuron(neurons.get(i - 1).size()));
-				} else { // Input Layer Neuron
-					// input neurons have no weights
-					neurons.get(i).set(j, new Neuron(0));
+		// creates layers
+		for (int i = 0; i < sizes.size(); i++) {
+			neurons.add(new ArrayList<Neuron>(sizes.get(i)));
+			
+			// creates neurons
+			for (int j = 0; j < sizes.get(i); j++) {
+				if (i == 0) { // Input Layer
+					neurons.get(i).add(new Neuron(0));
+				} else { // Hidden Layer and Output Layer
+					neurons.get(i).add(new Neuron(neurons.get(i - 1).size()));
 				}
 			}
 		}
-		this.cost = cost;
 	}
+	
+	public void setCost(CostFunction cost) { this.cost = cost; }
 	
 	public ArrayList<Neuron> output(ArrayList<Double> input) {
 		//TODO
@@ -38,6 +33,7 @@ public class Network {
 		ArrayList<Neuron> output = neurons.get(neurons.size() - 1);
 		return output;
 	}
+	
 	public void learn(ArrayList<Double> input, ArrayList<Double> desiredOutput, double nabla) {
 		// feed forward
 		feedForward(input);
@@ -66,46 +62,7 @@ public class Network {
 	
 	private void backPropogate(ArrayList<Double> input, ArrayList<Double> desiredOutput, double nabla) {
 		//TODO
-/*//		double error = cost(input, output);
-		ArrayList<Double> delta = new ArrayList<Double>(neurons.get(neurons.size() - 1).size());
-		ArrayList<Double> deltaWeights = new ArrayList<Double>(neurons.get(neurons.size() - 1).size());
-		ArrayList<Double> deltaBiases = new ArrayList<Double>(neurons.get(neurons.size() - 1).size());
-		
-		for (int i = 0; i < neurons.get(neurons.size() - 1).size(); i++) {
-			delta.add(0.0);
-		}
-		
-		for (int i = 0; i < deltaWeights.size(); i++) {
-			delta.set(i, desiredOutput.get(i) - neurons.get(neurons.size() - 1).get(i).getActivation());
-		}
-		
-		
-		// change deltas to apply to weights of each neuron
-		
-		// update weights in hidden layer
-		for (int i = neurons.size() - 1; i > 0; i--) {
-			for (int j = 0; j < neurons.get(i).size(); j++) {
-				// for each neuron find deltas of weights
-		/*		for (int k = 0; k < neurons.get(i).get(j).getNumWeights(); k++) {
-					// i think this is the wrong delta... but...
-					deltaWeights.set(k, )
-				}*//*
-				
-				for (int k = 0; k < neurons.get(i).get(j).getNumWeights(); k++) {
-					
-					neurons.get(i).get(j).setWeight(k, neurons.get(i).get(j).getWeight(k) - (neurons.get(i - 1).get(k).getActivation() * delta.get(k) * Functions.sigmoidPrime(neurons.get(i - 1).get(k).getActivation()) * nabla));
-					//neurons.get(i).get(j).setWeight(k, neurons.get(i).get(j).getWeight(k) - (neurons.get(i - 1).get(k).getActivation() * delta.get(k) *  nabla));
-				}
-			}
-		}
-		// update biases
-		for (int i = neurons.size() - 1; i > 0; i--) {
-			for (int j = 0; j < neurons.get(i).size(); j++) {
-				
-					neurons.get(i).get(j).setBias(neurons.get(i).get(j).getBias() - (neurons.get(i).get(j).getActivation() * delta.get(j) *  nabla));
-				
-			}
-		}*/
+
 		backpropError(desiredOutput);
 		updateWeights(nabla);
 		

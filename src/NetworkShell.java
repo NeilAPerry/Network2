@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import static java.lang.System.out;
 
 public class NetworkShell {
 
@@ -9,7 +8,8 @@ public class NetworkShell {
 		i.add(2);
 		i.add(3);
 		i.add(1);
-		Network j = new Network(i, CostFunctions.crossEntropyCost);
+		Network j = new Network(i);
+		j.setCost(CostFunctions.crossEntropyCost);
 		
 		ArrayList<ArrayList<Double>> input = new ArrayList<ArrayList<Double>>();
 		for (int a = 0; a < 4; a++) {
