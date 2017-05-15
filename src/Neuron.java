@@ -21,7 +21,7 @@ public class Neuron {
 		}
 		bias = Math.random();
 		for (int i = 0; i < weights.size(); i++) {
-			weights.set(i,Math.random());
+			weights.set(i, Math.random());
 			if (weights.get(i) != 0) {
 				weights.set(i, weights.get(i) / Math.sqrt(weights.get(i)));
 			}

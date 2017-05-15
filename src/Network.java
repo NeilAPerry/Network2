@@ -76,7 +76,7 @@ public class Network {
 			actualOutput.add(n.getOutput());
 		}
 		// should be cost
-		totalCost = cost(desiredOutput, actualOutput);
+		//totalCost = cost(desiredOutput, actualOutput);
 	}
 	
 	private void backpropError(ArrayList<Double> desiredOutput) {
@@ -91,18 +91,23 @@ public class Network {
 				for (int j = 0; j < layer.size(); j++) {
 					double error = 0.0;
 					for (int k = 0; k < layer.get(j).getNumWeights(); k++) {
+						// not sure about this...
 						error += layer.get(j).getWeight(k) * layer.get(j).getDelta();
 					}
 					errors.add(error);
 				}
+			// if output layer
 			} else {
 				for (int j = 0; j < layer.size(); j++) {
 					Neuron neuron = layer.get(j);
+					// output or activation for neuron?
 					errors.add(desiredOutput.get(j) - neuron.getActivation());
 				}
 			}
 			for (int j = 0; j < layer.size(); j++) {
 				Neuron neuron = layer.get(j);
+				// output or activation for neuron?
+				// is this right for cross entropy cost?
 				neuron.setDelta(errors.get(j) * Functions.sigmoidPrime(neuron.getOutput()));
 			}
 		}
