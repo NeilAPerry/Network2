@@ -2,81 +2,64 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Network {
-	private CostFunction cost = CostFunctions.crossEntropyCost;
 	private ArrayList<ArrayList<Neuron>> neurons;
-	private final double epsilon = 0.00000000001;
-	private double totalCost;
-	private ArrayList<Double> actualOutput = new ArrayList<Double>();
 	
 	Network(ArrayList<Integer> sizes) {
-		// create network
-		neurons = new ArrayList<ArrayList<Neuron>>(sizes.size());
+		// create network - input layer
+		neurons = new ArrayList<ArrayList<Neuron>>(sizes.size() - 1);
 		
-		// creates layers
-		for (int i = 0; i < sizes.size(); i++) {
+		// creates layers - input layer
+		for (int i = 0; i < sizes.size() - 1; i++) {
 			neurons.add(new ArrayList<Neuron>(sizes.get(i)));
 			
 			// creates neurons
 			for (int j = 0; j < sizes.get(i); j++) {
-				if (i == 0) { // Input Layer
-					neurons.get(i).add(new Neuron(0));
-				} else { // Hidden Layer and Output Layer
-					neurons.get(i).add(new Neuron(neurons.get(i - 1).size()));
-				}
+				neurons.get(i).add(new Neuron(sizes.get(i)));
 			}
 		}
 	}
 	
-	public void setCost(CostFunction cost) { this.cost = cost; }
 	
-	public ArrayList<Neuron> output(ArrayList<Double> input) {
-		//TODO
-		feedForward(input);
-		ArrayList<Neuron> output = neurons.get(neurons.size() - 1);
+	private ArrayList<Double> feedForward(ArrayList<Double> input) {
+		
+		ArrayList<Double> output = new ArrayList<Double>();
+		
+		for (int i = 0; i < neurons.size(); i++) {
+			// first hidden layer
+			if (i == 0) {
+				for (Neuron neuron : neurons.get(i)) {
+					output.add(neuron.activate(input));
+				}
+			// other hidden layers or output layer
+			} else {
+				input = output;
+				output = new ArrayList<Double>();
+				for (Neuron neuron : neurons.get(i)) {
+					output.add(neuron.activate(input));
+				}
+			}
+		}
+		
 		return output;
 	}
 	
-	public void learn(ArrayList<Double> input, ArrayList<Double> desiredOutput, double nabla) {
-		// feed forward
-		feedForward(input);
-		// back propagation
-		backPropogate(input, desiredOutput, nabla);
-	}
-	
-	private void feedForward(ArrayList<Double> input) {
-		// maybe input neurons' output should be the input to the network?
-		for (int j = 0; j < neurons.get(0).size(); j++) {
-			neurons.get(0).get(j).setOutput(input.get(j));
-			neurons.get(0).get(j).setActivation(input.get(j));
+	private void backPropogate(ArrayList<Double> input, ArrayList<Double> desiredOutput, double nabla) {
+		
+		double error = CostFunctions.quadraticCost.apply(feedForward(input), desiredOutput);
+		
+		for (int i = neurons.size() - 1; i >= 0; i--) {
+			for (Neuron neuron : neurons.get(i)) {
+				if (i == 0) {
+					neuron.backprop(0.1, error, input);
+				} else {
+					neuron.backprop(0.1, error, neurons.get(i - 1).stream().map(n -> n.getOutput()).collect(););
+				}
+			}
 		}
 		
-		// Start with first hidden layer of neurons	
-		for (int i = 1; i < neurons.size(); i++) {
-			List<Double> activations = 
-					neurons.get(i - 1).stream()
-						.map((Neuron n) -> { return n.getActivation();})
-						.collect(Collectors.toList());
-			neurons.get(i).stream()
-					.map((Neuron n) -> { return n.activate(activations); })
-					.collect(Collectors.toList());
-		}
-	}
-	
-	private void backPropogate(ArrayList<Double> input, ArrayList<Double> desiredOutput, double nabla) {
-		//TODO
-		calcTotalError(desiredOutput);
 		backpropError(desiredOutput);
 		updateWeights(nabla);
 		
-	}
-	
-	private void calcTotalError(ArrayList<Double> desiredOutput) {
-		actualOutput = new ArrayList<Double>();
-		for (Neuron n : neurons.get(neurons.size() - 1)) {
-			actualOutput.add(n.getOutput());
-		}
-		// should be cost
-		//totalCost = cost(desiredOutput, actualOutput);
 	}
 	
 	private void backpropError(ArrayList<Double> desiredOutput) {

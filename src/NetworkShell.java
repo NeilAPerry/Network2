@@ -60,7 +60,7 @@ public class NetworkShell {
 
 
 		for (int u = 0; u < input.size(); u++) {
-			System.out.println(j.output(input.get(u)).get(0).getActivation());
+			System.out.println(j.output(input.get(u)).get(0).activate());
 		}
 		
 	}
