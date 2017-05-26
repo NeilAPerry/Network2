@@ -5,15 +5,15 @@ public class Network {
 	private ArrayList<ArrayList<Neuron>> neurons;
 	
 	Network(ArrayList<Integer> sizes) {
-		// create network - input layer
+		// create network
 		neurons = new ArrayList<ArrayList<Neuron>>(sizes.size() - 1);
 		
-		// creates layers - input layer
+		// creates layers - starting with first hidden layer
 		for (int i = 0; i < sizes.size() - 1; i++) {
-			neurons.add(new ArrayList<Neuron>(sizes.get(i)));
+			neurons.add(new ArrayList<Neuron>(sizes.get(i + 1)));
 			
 			// creates neurons
-			for (int j = 0; j < sizes.get(i); j++) {
+			for (int j = 0; j < sizes.get(i + 1); j++) {
 				neurons.get(i).add(new Neuron(sizes.get(i)));
 			}
 		}
@@ -50,18 +50,28 @@ public class Network {
 		for (int i = neurons.size() - 1; i >= 0; i--) {
 			for (Neuron neuron : neurons.get(i)) {
 				if (i == 0) {
-					neuron.backprop(0.1, error, input);
+					neuron.backprop(nabla, error, input);
 				} else {
-					neuron.backprop(0.1, error, neurons.get(i - 1).stream().map(n -> n.getOutput()).collect(););
+					neuron.backprop(nabla, error, (ArrayList<Double>) neurons.get(i - 1).stream().map(n -> { return n.getOutput(); } ).collect(Collectors.toList()));
 				}
 			}
 		}
 		
-		backpropError(desiredOutput);
-		updateWeights(nabla);
+//		backpropError(desiredOutput);
+//		updateWeights(nabla);
 		
 	}
 	
+	public ArrayList<Double> learn(ArrayList<Double> input, ArrayList<Double> desiredOutput, double nabla) {
+		
+		backPropogate(input, desiredOutput, nabla);
+		return feedForward(input);
+	}
+	
+	public ArrayList<Double> output(ArrayList<Double> input) {
+		return feedForward(input);
+	}
+/*	
 	private void backpropError(ArrayList<Double> desiredOutput) {
 
 		// for all layers starting at last layer
@@ -109,10 +119,10 @@ public class Network {
 		/*Where weight is a given weight, learning_rate is a parameter that you must specify, 
 		 * error is the error calculated by the backpropagation procedure for the neuron and 
 		 * input is the input value that caused the error.
-		 */
+		 
 		
 		
 		
-	}
+	}*/
 
 }

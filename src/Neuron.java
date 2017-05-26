@@ -37,6 +37,7 @@ public class Neuron {
 
 		for (int i = 0; i < activations.size(); i++) {
 			double weight = weights.get(i);
+			// This is probably the biggest mistake in the network
 			weights.set(i, 
 					weight - (learningRate * error * Functions.sigmoidPrime(activations.get(i)))
 				);
@@ -44,7 +45,7 @@ public class Neuron {
 	}
 	
 	public double getBias() { return bias.getNumber(); }
-	public void setBias(double bias) { this.bias.updateNumber(bias);; }
+	public void setBias(double bias) { this.bias.updateNumber(bias); }
 
 	public ArrayList<Double> getWeight() { return weights; }
 	
